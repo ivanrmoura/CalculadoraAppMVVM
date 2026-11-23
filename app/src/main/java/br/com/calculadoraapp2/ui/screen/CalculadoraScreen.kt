@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -18,13 +20,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.calculadoraapp2.ui.component.ResultadoCard
 import br.com.calculadoraapp2.ui.theme.CalculadoraApp2Theme
 import br.com.calculadoraapp2.ui.viewmodel.CalculadoraScreenViewModel
 
 data class CalculadoraScreenUiSate(
     val resultado: String = "",
     val num1: String = "",
-    val num2: String = ""
+    val num2: String = "",
+    val resultadosSalvos: List<String> = listOf()
 )
 
 @Composable
@@ -39,6 +43,15 @@ fun CalculadoraScreen(
         state = state,
         onNum1Change = {
             viewModel.updateNum1(it)
+        },
+        onNum2Change = {
+            viewModel.updateNum2(it)
+        },
+        onSomarClick = {
+            viewModel.somar()
+        },
+        onSalvarResultado = {
+            viewModel.salvaResultado()
         }
     )
 
@@ -50,6 +63,7 @@ fun CalculadoraScreen(
     onNum1Change: (String) -> Unit = {},
     onNum2Change: (String) -> Unit = {},
     onSomarClick: () -> Unit = {},
+    onSalvarResultado: () -> Unit = {},
     state: CalculadoraScreenUiSate = CalculadoraScreenUiSate()
 ) {
 
@@ -134,6 +148,26 @@ fun CalculadoraScreen(
 
         }
 
+        Button(
+            onClick = onSalvarResultado,
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+        ){
+            Text(text = "Salvar Resultado")
+        }
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+           items(state.resultadosSalvos){
+                ResultadoCard(
+                    resultado = it
+                )
+           }
+        }
 
     }
 
